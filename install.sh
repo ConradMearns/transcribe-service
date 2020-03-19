@@ -21,12 +21,3 @@ if ! pip3 --version ; then
 fi
 
 pip3 install boto3
-
-# get secrets
-# cp credentials ~/.aws/credentials
-
-# copy transcriber.py
-
-# create service
-
-# uninstall?

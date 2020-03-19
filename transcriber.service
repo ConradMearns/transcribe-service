@@ -1,0 +1,12 @@
+[Unit]
+Description=Audio Transcriber Watchdog Service
+After=network.target
+  
+[Service]
+Type=idle
+User=transcriber
+Restart=always
+ExecStart=/home/transcriber/transcriber.py
+  
+[Install]
+WantedBy=default.target

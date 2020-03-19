@@ -8,16 +8,21 @@ import urllib
 from botocore.exceptions import ClientError
 
 sleep_time_main = 15 * 60
-recordings_path = "~/Recordings/"
-processed = "processed.json"
+config_path = "/var/lib/transcriber/"
+processed = os.path.join(config_path, "processed.json")
+settings_path = os.path.join(config_path, "settings.json")
 
-s3_bucket = ""
+def read_settings():
+    settings = {}
+    with open(settings_path) as json_file:
+        settings = json.load(json_file)
+        json_file.close()
+    return settings
 
 def read_processed_files():
     processed_files = {}
     with open(processed) as json_file:
-        data = json.load(json_file)
-        processed_files = data
+        processed_files = json.load(json_file)
         json_file.close()
     return processed_files
 
@@ -25,6 +30,14 @@ def write_processed_files(processed_files):
     with open(processed, 'w') as json_file:
         json.dump(processed_files, json_file)
         json_file.close()
+
+def check_settings_file():
+    if not os.path.exists(config_path):
+        os.makedirs(config_path)
+    if not os.path.isfile(settings_path):
+        with open(settings_path, 'w') as json_file:
+            json.dump({}, json_file)
+            json_file.close()
 
 def check_processed_files():
     if not os.path.isfile(processed):
@@ -126,6 +139,10 @@ def check_jobs_for_transcripts():
                 write_processed_files(processed_files)
 
 while True:
+    check_settings_file()
+    settings = read_settings()
+    # recordings_path = "/home/endako/Recordings/"
+    # s3_bucket = "munka.recordings"
 
     # Scan for new files
     check_processed_files()
